@@ -1,31 +1,38 @@
-fn find_max(nub: &[i32]) -> Option<i32> {
-    let mut i: usize = 0;
+trait Jieshao {
+    fn jieshao(&self) -> String;
+}
 
-    if nub.get(0) == None {
-        return None
-    }
+struct Maozi {
+    yanse: String,
+}
 
-    let mut m = nub[0];
-    while nub.get(i) != None {
-        if nub[i] >= m {
-            m = nub[i];
-        } 
-        i += 1;
+struct Xiezi {
+    chicun: i32,
+}
+
+impl Jieshao for Maozi {
+    fn jieshao(&self) -> String {
+        format!("一顶{}的帽子。", self.yanse)
     }
-    return Some(m)
+}
+
+impl Jieshao for Xiezi {
+    fn jieshao(&self) -> String {
+        format!("一双{}码的鞋子。", self.chicun)
+    }
+}
+
+fn show(item: &impl Jieshao) {
+    println!("{}", item.jieshao());
 }
 
 fn main() {
-    let nums1: &[i32] = &[3, 9 ,7, 2, 4];
-    let nums_empty: &[i32] = &[];
+    let redhat = Maozi {
+        yanse: String::from("红色"),
+    };
 
-    match find_max(&nums1) {
-    Some(n) => println!("The max number is {}", n),
-    None => println!("Empty Input."),
-    }
+    let nikeshoes = Xiezi { chicun: 42 };
 
-    match find_max(&nums_empty) {
-    Some(n) => println!("The max number is {}", n),
-    None => println!("Empty Input."),
-    }
+    show(&redhat);
+    show(&nikeshoes);
 }
