@@ -4,6 +4,7 @@ fn find_max(nub: &[i32]) -> Option<i32> {
     if nub.get(0) == None {
         return None
     }
+
     let mut m = nub[0];
     while nub.get(i) != None {
         if nub[i] >= m {
