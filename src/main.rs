@@ -1,51 +1,45 @@
-
-use std::fmt;
-trait Field {
-    fn zero() -> Self;
-    fn add(&self, other: &Self) -> Self;
-    fn double(&self) -> Self;
+trait Summary {
+    fn summarize(&self) -> String;
 }
 
-struct Fp(u64);
-
-impl fmt::Display for Fp {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Fp({})", self.0)
-    }
+struct Article {
+    title: String,
+    author: String,
 }
 
-impl Field for Fp {
-    fn zero() -> Self {
-        Fp(0)
-    }
-    fn add(&self, other: &Self) -> Self {
-        Fp(self.0 + other.0)
-    }
-    fn double(&self) -> Self {
-        self.add(&self)
+struct Tweet {
+    username: String,
+    body: String,
+}
+
+
+impl Summary for Article {
+    fn summarize(&self) -> String {
+        format!("Book name: {}, Author name: {}.", self.title, self.author)
     }
 }
 
-// fn double<T: Field>(x: &T) -> T {
-//     x.add(x)
-// }
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("@{} tweets out: {}.", self.username, self.body)
+    }
+}
+
+fn print_summary<T: Summary>(item: &T) {
+    println!("{}", item.summarize());
+}
 
 fn main() {
-    let a = Fp(10);
-    let b = Fp(32);
-    let c = a.add(&b);
-    let z = Fp::zero();
-    let d = a.double();
+    let aa = Article {
+        title: String::from("Rust入门"),
+        author: String::from("作者A"),
+    };
 
-    // println!("a = {}", a.0);
-    // println!("b = {}", b.0);
-    // println!("c = a + b = {}", c.0);
-    // println!("zero = {}", z);
+    let bb = Tweet {
+        username:  String::from("qwerty"),
+        body: String::from("rust for zk + crypto"),
+    };
 
-    println!("a = {}", a.0);
-    println!("b = {}", b.0);
-    println!("c = a + b = {}", c.0);
-    println!("z = {}", z);
-    println!("The d = {}", d.0);
-
+    print_summary(&aa);
+    print_summary(&bb);
 }
