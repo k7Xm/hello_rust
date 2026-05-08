@@ -1,45 +1,52 @@
-trait Summary {
-    fn summarize(&self) -> String;
+use std::fmt;
+trait Field {
+    fn zero() -> Self;
+    fn add(&self, other: &Self) -> Self;
+    fn mul(&self, other: &Self) -> Self;
 }
 
-struct Article {
-    title: String,
-    author: String,
-}
+struct Fp(u64);
 
-struct Tweet {
-    username: String,
-    body: String,
-}
+impl Field for Fp {
+    fn zero() -> Self {
+        Fp(0)
+    }
 
+    fn add(&self, other: &Self) -> Self {
+        Fp(self.0 + other.0)
+    }
 
-impl Summary for Article {
-    fn summarize(&self) -> String {
-        format!("Book name: {}, Author name: {}.", self.title, self.author)
+    fn mul(&self, other: &Self) -> Self {
+        Fp(self.0 * other.0)
     }
 }
 
-impl Summary for Tweet {
-    fn summarize(&self) -> String {
-        format!("@{} tweets out: {}.", self.username, self.body)
+//Display trait???
+impl fmt::Display for Fp {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Fp({})", self.0)
     }
 }
 
-fn print_summary<T: Summary>(item: &T) {
-    println!("{}", item.summarize());
+fn square<T>(x: &T) -> T
+where
+    T: Field + fmt::Display,
+{
+    x.mul(x)
 }
 
 fn main() {
-    let aa = Article {
-        title: String::from("Rust入门"),
-        author: String::from("作者A"),
-    };
+    let a = Fp(7);
+    let b = Fp(3);
+    let c = a.add(&b);
+    let s = square(&a);
+    let z = Fp::zero();
+    let m = a.mul(&b);
 
-    let bb = Tweet {
-        username:  String::from("qwerty"),
-        body: String::from("rust for zk + crypto"),
-    };
-
-    print_summary(&aa);
-    print_summary(&bb);
+    println!("a = {}", a);
+    println!("b = {}", b);
+    println!("a + b = {}", c);
+    println!("a^2 = {}", s);
+    println!("zero = {}", z);
+    println!("a * b = {}", m);
 }
