@@ -7,20 +7,11 @@ fn divide(a: f64, b: f64) -> Result<f64, String> {
 }
 
 fn divide_twice(n: f64, d1: f64, d2: f64) -> Result<f64, String> {
-    let r1 = match divide(n, d1) {
-        Ok(v) => v,
-        Err(e) => return Err(e),
-    };
-    println!("Phase1 success, r1 is {}.", r1);
+    let r1 = divide(n, d1)?;
 
-    let r2 = match divide(r1, d2) {
-        Ok(v) => v,
-        Err(e) => return Err(e),
-    };
+    let r2 = divide(r1, d2)?;
 
-    println!("Phase2 success, r2 is {}.", r2);
-
-    return Ok(r2);
+    Ok(r2)
 }
 
 fn main() {
