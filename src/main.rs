@@ -1,61 +1,35 @@
-enum BmiError {
-    InvalidInput,
-    HealthIssue(f64),
-}
-
-struct BmiResult {
-    value: f64,
-    status: String,
-}
-
-fn clean_input(height: &str, weight: &str) -> Result<(f64, f64), ()> {
-    let h = height.parse::<f64>().map_err(|_| ())?;
-    let w = weight.parse::<f64>().map_err(|_| ())?;
-
-    if h > 0.0 && w > 0.0 {
-        Ok((h, w))
+fn divide(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 {
+        Err(String::from("Cannot divide by zero"))
     } else {
-        Err(())
+        Ok(a / b)
     }
 }
 
-fn calculate_bmi(height: f64, weight: f64) -> Result<BmiResult, BmiError> {
-    let bmi = weight / (height * height);
+fn divide_twice(n: f64, d1: f64, d2: f64) -> Result<f64, String> {
+    let r1 = match divide(n, d1) {
+        Ok(v) => v,
+        Err(e) => return Err(e),
+    };
+    println!("Phase1 success, r1 is {}.", r1);
 
-    if bmi >= 18.5 && bmi <= 24.0 {
-        Ok(BmiResult {
-            value: bmi,
-            status: String::from("标准"),
-        })
-    } 
+    let r2 = match divide(r1, d2) {
+        Ok(v) => v,
+        Err(e) => return Err(e),
+    };
 
-    else if bmi < 18.5 {
-        Ok(BmiResult {
-            value: bmi,
-            status: String::from("偏瘦"),
-        })
-    } 
+    println!("Phase2 success, r2 is {}.", r2);
 
-    else {
-        Ok(BmiResult {
-            value: bmi,
-            status: String::from("超重"),
-        })
-    } 
+    return Ok(r2);
 }
 
 fn main() {
-    let input_h = "1.8";
-    let input_w = "90.0";
+    let n = 100.0;
+    let d1 = 2.0;
+    let d2 = 5.0;
 
-    let final_result = match clean_input(input_h, input_w) {
-        Ok((h, w)) => match calculate_bmi(h, w) {
-            Ok(res) => format!("BMI: {:.1}, 状态: {}", res.value, res.status),
-            Err(BmiError::HealthIssue(val)) => format!("BMI: {:.1}, 警告: 体型存在问题", val),
-            _ => String::from("计算层未知错误"),
-        },
-        Err(_) => String::from("错误：输入必须是正数字"),
-    };
-
-    println!("{}", final_result);
+    match divide_twice(n, d1, d2) {
+        Ok(v) => println!("The value is {}", v),
+        Err(e) => println!("{}", e),
+    }
 }
