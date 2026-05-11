@@ -1,26 +1,30 @@
-fn divide(a: f64, b: f64) -> Result<f64, String> {
-    if b == 0.0 {
-        Err(String::from("Cannot divide by zero"))
-    } else {
-        Ok(a / b)
-    }
+enum FactoryError {
+    EmptyInput,
+    InvalidNumber(String),
+    OverScale(f64),
 }
 
-fn divide_twice(n: f64, d1: f64, d2: f64) -> Result<f64, String> {
-    let r1 = divide(n, d1)?;
+fn factory_process(s: &str) -> Result<f64, FactoryError> {
+    if s.is_empty() {
+        return Err(FactoryError::EmptyInput);
+    }
 
-    let r2 = divide(r1, d2)?;
+    let num = s.parse::<f64>()
+        .map_err(|e| FactoryError::InvalidNumber(e.to_string()))?;
 
-    Ok(r2)
+    if num > 100.0 {
+        return Err(FactoryError::OverScale(num));
+    }
+    Ok(num / 2.0)
 }
 
 fn main() {
-    let n = 100.0;
-    let d1 = 2.0;
-    let d2 = 5.0;
+    let s = "999d";
 
-    match divide_twice(n, d1, d2) {
+    match factory_process(s) {
         Ok(v) => println!("The value is {}", v),
-        Err(e) => println!("{}", e),
+        Err(FactoryError::EmptyInput) => println!("Imput Something."),
+        Err(FactoryError::InvalidNumber(s)) => println!("{}", s),
+        Err(FactoryError::OverScale(s)) => println!("{:?} is too big.", s),
     }
 }
